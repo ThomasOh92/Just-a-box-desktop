@@ -6,6 +6,7 @@ import GridLayout from 'react-grid-layout';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { StickyNoteItem } from './box-components/stickyNote';
 import { ContextMenu } from './box-components/contextMenu';
+import { Dustbin } from './box-components/dustbin';
 import { addToStickyNoteState,  removeFromStickyNoteState } from '../app/features/stickyNoteSlice';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -18,7 +19,8 @@ const SingleBox: React.FC = () => {
   const [layout, setLayout] = useState<Layout[]>(
       [
         { i: "note1", x: 2, y: 2, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
-        { i: "test", x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]}
+        { i: "test", x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
+        { i: "dustbin", x: 12, y: 14, w: 1, h: 2, static: true },
       ],
     );
 
@@ -65,7 +67,7 @@ const SingleBox: React.FC = () => {
 
   // Render begins here
   return (
-    <Box onContextMenu={handleRightClick} height={600} id="box">
+    <Box onContextMenu={handleRightClick} height={500} width={700} id="box" style={{border: 'grey 1px solid'}}>
       <ContextMenu 
         contextMenu={contextMenu} 
         onClose={() => setContextMenu(null)} 
@@ -84,12 +86,15 @@ const SingleBox: React.FC = () => {
         isResizable={true}
         preventCollision={true}
         isDraggable={true}
-        width={800}
+        maxRows={17}
+        width={700}
+        draggableHandle='.dragHandle'
       > 
         {/* Sticky Note Elements */}
         {stickyNotesToRender}
 
-        <div key="test" style={{border: '1px solid black' }}></div>
+        <div key="test" className="dragHandle" style={{border: '1px solid black' }}></div>
+        <div key="dustbin"><Dustbin/></div>
       </GridLayout>
 
     </Box>
