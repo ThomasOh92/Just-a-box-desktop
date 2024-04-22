@@ -7,11 +7,13 @@ interface WebLink {
 }
 
 interface WebLinksState {
-  webLinks: WebLink[];
+  weblinksArray: WebLink[];
 }
 
 const initialState: WebLinksState = {
-    webLinks: [],
+  weblinksArray: [
+    {id: "link1", linkName: "GoogleTest", url: "https://www.google.com"},
+  ],
 };
 
 export const webLinksSlice = createSlice({
@@ -19,16 +21,16 @@ export const webLinksSlice = createSlice({
   initialState,
   reducers: {
     addWebLink: (state, action: PayloadAction<WebLink>) => {
-      state.webLinks.push(action.payload);
+      state.weblinksArray.push(action.payload);
     },
     removeWebLink: (state, action: PayloadAction<string>) => {
-      state.webLinks = state.webLinks.filter(weblink => weblink.id !== action.payload);
+      state.weblinksArray = state.weblinksArray.filter(weblink => weblink.id !== action.payload);
     },
     // You can add more reducers as needed, for example, to update a weblink's details
     updateWebLink: (state, action: PayloadAction<{id: string, linkName?: string, url?: string}>) => {
-      const index = state.webLinks.findIndex(weblink => weblink.id === action.payload.id);
+      const index = state.weblinksArray.findIndex(weblink => weblink.id === action.payload.id);
       if(index !== -1) {
-        const weblink = state.webLinks[index];
+        const weblink = state.weblinksArray[index];
         if(action.payload.linkName) weblink.linkName = action.payload.linkName;
         if(action.payload.url) weblink.url = action.payload.url;
       }

@@ -6,5 +6,9 @@ contextBridge.exposeInMainWorld('electron', {
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
+  },
+  openExternalLink: (url) => {
+    ipcRenderer.send('open-external-link', url);
   }
 });
+

@@ -5,14 +5,19 @@ import LinkIcon from '@mui/icons-material/Link';
 interface WebLinkItemProps {
   id: string;
   link: string;
+  linkName: string;
   onDelete: (id: string) => void;
   showDelete: boolean;
 }
 
-export const WebLinkItem: React.FC<WebLinkItemProps> = ({ id, link, onDelete, showDelete }) => {
+export const WebLinkItem: React.FC<WebLinkItemProps> = ({ id, link, linkName, onDelete, showDelete }) => {
+  
+  const handleLinkClick = () => {
+    (window as any).electron.openExternalLink(link);
+  };
+
   return (
     <Box
-      className="dragHandle"
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -21,8 +26,8 @@ export const WebLinkItem: React.FC<WebLinkItemProps> = ({ id, link, onDelete, sh
         '&:hover': { border: '1px dotted', borderColor: 'primary.dark', borderRadius: '5px' },
       }}
     >
-      <LinkIcon sx={{ fontSize: 40, paddingBottom: '5px' }} />
-      <Link sx={{ fontSize: 12, textAlign: 'center' }} href={link} underline="hover" target="_blank">{link}</Link>
+      <LinkIcon className="dragHandle" sx={{ fontSize: 20, paddingBottom: '5px' }} />
+      <Link sx={{ fontSize: 12, textAlign: 'center'}} onClick={handleLinkClick} underline="hover" target="_blank">{linkName}</Link>
     </Box>
   );
 };

@@ -10,6 +10,7 @@ import { addToStickyNoteState,  removeFromStickyNoteState } from '../app/feature
 import { AddItemModal } from './box-components/addItemModal';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+import { WebLinkItem } from './box-components/webLink';
 
 const SingleBox: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,9 +18,9 @@ const SingleBox: React.FC = () => {
   //Layout Management
   const [layout, setLayout] = useState<Layout[]>(
       [
-        { i: "note1", x: 2, y: 2, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
         { i: "test", x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
-        { i: "dustbin", x: 13, y: 14, w: 1, h: 2, static: true },
+        { i: "note1", x: 2, y: 2, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
+        { i: "link1", x: 2, y: 3, w: 1, h: 2, isResizable: false},
       ],
     );
   const onLayoutChange = (newLayout: any) => {
@@ -81,11 +82,25 @@ const SingleBox: React.FC = () => {
 
 
   //Weblink Management
+  const weblinks = useAppSelector(state => state.webLinks.weblinksArray)
+  const weblinksToRender = weblinks.map((weblink: { id: string, linkName: string, url: string }) => {
+    return (
+      <div key={weblink.id} onContextMenu={(e) => handleWeblinkRightClick(e, weblink.id)}>
+        <WebLinkItem
+          id={weblink.id}
+          link={weblink.url}
+          linkName={weblink.linkName}
+          onDelete={()=>console.log("deleteplaceholder")}
+          showDelete={true}
+        />
+      </div>
+    );
+  })
   const [weblinkModal, setWeblinkModal] = useState<boolean>(false);
   const addWeblink = () => {
     console.log("addweblinkplaceholder");
   };
-  const handleWeblinkRightClick = (event: React.MouseEvent) => (event: React.MouseEvent, id?: string) => {
+  const handleWeblinkRightClick = (event: React.MouseEvent, id?: string) => {
     event.preventDefault();
     event.stopPropagation();
     setContextMenu({
@@ -125,12 +140,9 @@ const SingleBox: React.FC = () => {
         draggableHandle='.dragHandle'
         style={{overflow: 'hidden'}}
       > 
-        {/* Sticky Note Elements */}
         {stickyNotesToRender}
-        {/* Weblink Elements */}
-
+        {weblinksToRender}
         {/* Document Elements */}
-
         {/* Test Element */}
         <div key="test" className="dragHandle" style={{border: '1px solid black' }}></div>
       </GridLayout>
