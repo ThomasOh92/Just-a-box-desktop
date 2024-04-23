@@ -49,5 +49,9 @@ const createWindow = () => {
   ipcMain.on('open-external-link', (_, url) => {
     shell.openExternal(url);
   });
+
+  ipcMain.on('open-file', (_, filePath) => {
+    shell.openPath(filePath);
+  });
   
   

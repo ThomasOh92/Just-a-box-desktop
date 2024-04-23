@@ -1,19 +1,22 @@
 import * as React from 'react';
-import { Box, IconButton, Link } from '@mui/material';
+import { Box, Link } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 interface FileLinkItemProps {
   id: string;
-  link: string;
-  onDelete: (id: string) => void;
-  showDelete: boolean;
+  fileName: string;
+  filePath: string;
 }
 
-export const FileLinkItem: React.FC<FileLinkItemProps> = ({ id, link, onDelete, showDelete }) => {
+export const FileLinkItem: React.FC<FileLinkItemProps> = ({ id, fileName, filePath }) => {
+  
+  const handleLinkClick = () => {
+    console.log("Opening file: ", filePath);
+    (window as any).electron.openFile(filePath);
+  };
+  
   return (
     <Box
-      className="dragHandle"
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -22,13 +25,8 @@ export const FileLinkItem: React.FC<FileLinkItemProps> = ({ id, link, onDelete, 
         '&:hover': { border: '1px dotted', borderColor: 'primary.dark', borderRadius: '5px' },
       }}
     >
-      {showDelete && (
-        <IconButton aria-label="delete" size="small" color="error" onClick={() => onDelete(id)} sx={{ position: 'absolute', top: '0', right: '0' }}>
-          <DeleteIcon fontSize="small" />
-        </IconButton>
-      )}
-      <DescriptionIcon sx={{ fontSize: 40, paddingBottom: '5px' }} />
-      <Link sx={{ fontSize: 12, textAlign: 'center' }} href={link} underline="hover" target="_blank">{link}</Link>
+      <DescriptionIcon className="dragHandle" sx={{ fontSize: 20, paddingBottom: '5px' }} />
+      <Link sx={{ fontSize: 12, textAlign: 'center'}} onClick={handleLinkClick} underline="hover" target="_blank">{fileName}</Link>
     </Box>
   );
 };

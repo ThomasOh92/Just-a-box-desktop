@@ -9,6 +9,9 @@ contextBridge.exposeInMainWorld('electron', {
   },
   openExternalLink: (url) => {
     ipcRenderer.send('open-external-link', url);
+  },
+  openFile: (filePath) => {
+    ipcRenderer.send('open-file', filePath);
   }
 });
 

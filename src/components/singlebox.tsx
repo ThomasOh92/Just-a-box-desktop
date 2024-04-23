@@ -12,6 +12,8 @@ import { AddItemModal } from './box-components/addItemModal';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { WebLinkItem } from './box-components/webLink';
+import { FileLinkItem } from './box-components/fileLink';
+import { addToFileLinkState, removeFromFileLinkState } from '../app/features/fileLinkSlice';
 
 const SingleBox: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +24,7 @@ const SingleBox: React.FC = () => {
         { i: "test", x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
         { i: "note1", x: 2, y: 2, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
         { i: "link1", x: 2, y: 3, w: 1, h: 2, isResizable: false},
+        { i: "file1", x: 2, y: 4, w: 1, h: 2, isResizable: false}
       ],
     );
   const onLayoutChange = (newLayout: any) => {
@@ -34,9 +37,15 @@ const SingleBox: React.FC = () => {
     console.log(contextMenu?.id, "delete item with id");
     if (contextMenu?.id?.startsWith("note")) {
       dispatch(removeFromStickyNoteState(contextMenu.id));
+      console.log('deleting note')
     }
     if (contextMenu?.id?.startsWith("link")) {
       dispatch(removeFromWebLinkState(contextMenu.id));
+      console.log('deleting link')
+    }
+    if (contextMenu?.id?.startsWith("file")) {
+      dispatch(removeFromFileLinkState(contextMenu.id));
+      console.log('deleting file')
     }
     setLayout(prevLayout => prevLayout.filter(item => item.i !== contextMenu?.id));
     setContextMenu(null); // Close the context menu after deletion
@@ -114,6 +123,38 @@ const SingleBox: React.FC = () => {
     });
   };
 
+  //File Management
+  const filelinks = useAppSelector(state => state.fileLinks.fileLinksArray)
+  const filelinksToRender = filelinks.map((filelink: { id: string, fileName: string, filePath: string }) => {
+    return (
+      <div key={filelink.id} onContextMenu={(e) => handleFileRightClick(e, filelink.id)}>
+        <FileLinkItem
+          id={filelink.id}
+          fileName={filelink.fileName}
+          filePath={filelink.filePath}
+        /> 
+      </div>
+    );
+  })
+  const [filelinkModal, setFilelinkModal] = useState<boolean>(false);
+  const addFilelink = (inputValue: string) => {
+    const newFileLinkId = "file" + Math.random().toString(36).substring(7) // Random ID
+    const lastIndex = inputValue.lastIndexOf("\\");
+    const submittedFileName = inputValue.substring(lastIndex + 1);
+    console.log(submittedFileName, "submittedFileName")
+    dispatch(addToFileLinkState({id: newFileLinkId, fileName: submittedFileName, filePath: inputValue}));
+    setLayout([...layout, { i: newFileLinkId, x: 0, y: 0,  w: 1, h: 2, isResizable: false}])
+  };
+  const handleFileRightClick = (event: React.MouseEvent, id?: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenu({
+      mouseX: event.clientX - 2,
+      mouseY: event.clientY + 4,
+      id: id
+    });
+  };
+
 
   // Render begins here
   return (
@@ -121,8 +162,14 @@ const SingleBox: React.FC = () => {
       <ContextMenu 
         contextMenu={contextMenu} 
         onClose={() => setContextMenu(null)} 
-        onAddStickyNote={() => addStickyNote()}
-        onAddDocument={() => console.log("adddocplaceholder")} 
+        onAddStickyNote={() => {
+          addStickyNote()
+          setContextMenu(null)
+        }}
+        onAddDocument={() => {
+          setFilelinkModal(true) 
+          setContextMenu(null)
+        }} 
         onAddLink={() => {
           setWeblinkModal(true) 
           setContextMenu(null)
@@ -146,11 +193,12 @@ const SingleBox: React.FC = () => {
       > 
         {stickyNotesToRender}
         {weblinksToRender}
-        {/* Document Elements */}
+        {filelinksToRender}
         {/* Test Element */}
         <div key="test" className="dragHandle" style={{border: '1px solid black' }}></div>
       </GridLayout>
       <AddItemModal open={weblinkModal} onClose={() => setWeblinkModal(false)} onAdd={addWeblink} label="Add URL Here"/>
+      <AddItemModal open={filelinkModal} onClose={() => setFilelinkModal(false)} onAdd={addFilelink} label="Add File Path Here"/>
     </Box>
   );
   
