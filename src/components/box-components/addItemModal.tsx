@@ -26,7 +26,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onAdd
   };
 
   const handleAdd = () => {
-    // onAdd(inputValue);
+    onAdd(inputValue);
     console.log("addedweblinkplaceholder");
     setInputValue('');
     onClose();

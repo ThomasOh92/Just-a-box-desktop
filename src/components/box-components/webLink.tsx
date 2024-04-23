@@ -6,11 +6,9 @@ interface WebLinkItemProps {
   id: string;
   link: string;
   linkName: string;
-  onDelete: (id: string) => void;
-  showDelete: boolean;
 }
 
-export const WebLinkItem: React.FC<WebLinkItemProps> = ({ id, link, linkName, onDelete, showDelete }) => {
+export const WebLinkItem: React.FC<WebLinkItemProps> = ({ id, link, linkName }) => {
   
   const handleLinkClick = () => {
     (window as any).electron.openExternalLink(link);

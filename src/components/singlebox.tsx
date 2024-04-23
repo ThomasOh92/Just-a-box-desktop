@@ -7,6 +7,7 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { StickyNoteItem } from './box-components/stickyNote';
 import { ContextMenu } from './box-components/contextMenu';
 import { addToStickyNoteState,  removeFromStickyNoteState } from '../app/features/stickyNoteSlice';
+import { addToWebLinkState, removeFromWebLinkState } from '../app/features/webLinkSlice';
 import { AddItemModal } from './box-components/addItemModal';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -33,6 +34,9 @@ const SingleBox: React.FC = () => {
     console.log(contextMenu?.id, "delete item with id");
     if (contextMenu?.id?.startsWith("note")) {
       dispatch(removeFromStickyNoteState(contextMenu.id));
+    }
+    if (contextMenu?.id?.startsWith("link")) {
+      dispatch(removeFromWebLinkState(contextMenu.id));
     }
     setLayout(prevLayout => prevLayout.filter(item => item.i !== contextMenu?.id));
     setContextMenu(null); // Close the context menu after deletion
@@ -90,15 +94,15 @@ const SingleBox: React.FC = () => {
           id={weblink.id}
           link={weblink.url}
           linkName={weblink.linkName}
-          onDelete={()=>console.log("deleteplaceholder")}
-          showDelete={true}
         />
       </div>
     );
   })
   const [weblinkModal, setWeblinkModal] = useState<boolean>(false);
-  const addWeblink = () => {
-    console.log("addweblinkplaceholder");
+  const addWeblink = (inputValue: string) => {
+    const newWebLinkId = "link" + Math.random().toString(36).substring(7) // Random ID
+    dispatch(addToWebLinkState({id: newWebLinkId, linkName: inputValue, url: inputValue}));
+    setLayout([...layout, { i: newWebLinkId, x: 0, y: 0,  w: 1, h: 2, isResizable: false}])
   };
   const handleWeblinkRightClick = (event: React.MouseEvent, id?: string) => {
     event.preventDefault();
@@ -117,12 +121,12 @@ const SingleBox: React.FC = () => {
       <ContextMenu 
         contextMenu={contextMenu} 
         onClose={() => setContextMenu(null)} 
-        onAddStickyNote={() => addStickyNote()} 
-        onAddDocument={() => {
+        onAddStickyNote={() => addStickyNote()}
+        onAddDocument={() => console.log("adddocplaceholder")} 
+        onAddLink={() => {
           setWeblinkModal(true) 
           setContextMenu(null)
         }} 
-        onAddLink={() => console.log("addlinkplaceholder")}
         onDeleteItem={deleteItem} 
         />
       <GridLayout
