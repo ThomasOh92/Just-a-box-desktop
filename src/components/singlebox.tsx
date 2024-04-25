@@ -17,7 +17,16 @@ import { addToFileLinkState, removeFromFileLinkState } from '../app/features/fil
 
 const SingleBox: React.FC = () => {
   const dispatch = useAppDispatch();
-
+  
+  
+  useEffect(() => {
+    (async () => {
+      const layoutFromElectronStore = await (window as any).electron.getStoreValue('initialLayout');
+      console.log(layoutFromElectronStore, "layoutFromElectronStore");
+      // set state here if needed
+    })();
+  }, []);
+  
   //Layout Management
   const [layout, setLayout] = useState<Layout[]>(
       [
@@ -33,6 +42,7 @@ const SingleBox: React.FC = () => {
   useEffect(() => {
     console.log(layout, "new layout");
   }, [layout]);
+
   const deleteItem = () => {
     console.log(contextMenu?.id, "delete item with id");
     if (contextMenu?.id?.startsWith("note")) {
@@ -58,7 +68,7 @@ const SingleBox: React.FC = () => {
     id: string | undefined;
   } | null>(null);
   
-  const handleRightClick = (event: React.MouseEvent) => {
+  const handleRightClickGeneric = (event: React.MouseEvent) => {
     event.preventDefault();
     setContextMenu({
       mouseX: event.clientX - 2,
@@ -66,11 +76,21 @@ const SingleBox: React.FC = () => {
       id: undefined});
   };
 
+  const handleRightClickElement =  (event: React.MouseEvent, id?: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenu({
+      mouseX: event.clientX - 2,
+      mouseY: event.clientY + 4,
+      id: id
+    });
+  }
+
   //Sticky Note Management
   const stickyNotes = useAppSelector(state => state.stickyNotes.stickyNotesArray)
   const stickyNotesToRender = stickyNotes.map((note: { id: string, content: string }) => {
     return (
-      <div key={note.id} onContextMenu={(e) => handleStickyNoteRightClick(e, note.id)}>
+      <div key={note.id} onContextMenu={(e) => handleRightClickElement(e, note.id)}>
         <StickyNoteItem
           id={note.id}
           content={note.content}
@@ -83,22 +103,12 @@ const SingleBox: React.FC = () => {
     dispatch(addToStickyNoteState({ newNoteId }));
     setLayout([...layout, { i: newNoteId, x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]}])
   }
-  const handleStickyNoteRightClick = (event: React.MouseEvent, id?: string) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setContextMenu({
-      mouseX: event.clientX - 2,
-      mouseY: event.clientY + 4,
-      id: id
-    });
-  };
-
 
   //Weblink Management
   const weblinks = useAppSelector(state => state.webLinks.weblinksArray)
   const weblinksToRender = weblinks.map((weblink: { id: string, linkName: string, url: string }) => {
     return (
-      <div key={weblink.id} onContextMenu={(e) => handleWeblinkRightClick(e, weblink.id)}>
+      <div key={weblink.id} onContextMenu={(e) => handleRightClickElement(e, weblink.id)}>
         <WebLinkItem
           id={weblink.id}
           link={weblink.url}
@@ -113,21 +123,12 @@ const SingleBox: React.FC = () => {
     dispatch(addToWebLinkState({id: newWebLinkId, linkName: inputValue, url: inputValue}));
     setLayout([...layout, { i: newWebLinkId, x: 0, y: 0,  w: 1, h: 2, isResizable: false}])
   };
-  const handleWeblinkRightClick = (event: React.MouseEvent, id?: string) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setContextMenu({
-      mouseX: event.clientX - 2,
-      mouseY: event.clientY + 4,
-      id: id
-    });
-  };
 
   //File Management
   const filelinks = useAppSelector(state => state.fileLinks.fileLinksArray)
   const filelinksToRender = filelinks.map((filelink: { id: string, fileName: string, filePath: string }) => {
     return (
-      <div key={filelink.id} onContextMenu={(e) => handleFileRightClick(e, filelink.id)}>
+      <div key={filelink.id} onContextMenu={(e) => handleRightClickElement(e, filelink.id)}>
         <FileLinkItem
           id={filelink.id}
           fileName={filelink.fileName}
@@ -145,20 +146,10 @@ const SingleBox: React.FC = () => {
     dispatch(addToFileLinkState({id: newFileLinkId, fileName: submittedFileName, filePath: inputValue}));
     setLayout([...layout, { i: newFileLinkId, x: 0, y: 0,  w: 1, h: 2, isResizable: false}])
   };
-  const handleFileRightClick = (event: React.MouseEvent, id?: string) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setContextMenu({
-      mouseX: event.clientX - 2,
-      mouseY: event.clientY + 4,
-      id: id
-    });
-  };
-
 
   // Render begins here
   return (
-    <Box className="box" onContextMenu={handleRightClick} height={525} width={750} id="box" style={{overflow: 'hidden'}}>
+    <Box className="box" onContextMenu={handleRightClickGeneric} height={525} width={750} id="box" style={{overflow: 'hidden'}}>
       <ContextMenu 
         contextMenu={contextMenu} 
         onClose={() => setContextMenu(null)} 
