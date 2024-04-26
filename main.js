@@ -76,6 +76,10 @@ const createWindow = () => {
     store.set(key, value);
   });
 
+  ipcMain.handle('getWholeStore', async (event) => { 
+    return store.store;
+  });
+
 
 // See format for initial test data, found in "C:\Users\ohcst\AppData\Roaming\just-a-box-v2\config.json". Edit from there
 // store.set({

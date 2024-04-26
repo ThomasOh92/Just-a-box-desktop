@@ -11,9 +11,7 @@ interface FileLinksState {
 }
 
 const initialState: FileLinksState = {
-  fileLinksArray: [
-    {id: "file1", fileName: "testdoc", filePath: String.raw`"C:\Users\ohcst\OneDrive\Desktop\testworddoc.docx"`}
-  ],
+  fileLinksArray: [],
 };
 
 export const fileLinksSlice = createSlice({

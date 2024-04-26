@@ -11,9 +11,7 @@ interface WebLinksState {
 }
 
 const initialState: WebLinksState = {
-  weblinksArray: [
-    {id: "link1", linkName: "GoogleTest", url: "https://www.google.com"},
-  ],
+  weblinksArray: [],
 };
 
 export const webLinksSlice = createSlice({

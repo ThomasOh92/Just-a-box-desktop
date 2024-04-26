@@ -17,25 +17,22 @@ import { addToFileLinkState, removeFromFileLinkState } from '../app/features/fil
 
 const SingleBox: React.FC = () => {
   const dispatch = useAppDispatch();
-  
-  
+  const [layout, setLayout] = useState<Layout[]>([]);
+
   useEffect(() => {
     (async () => {
-      const layoutFromElectronStore = await (window as any).electron.getStoreValue('initialLayout');
-      console.log(layoutFromElectronStore, "layoutFromElectronStore");
-      // set state here if needed
+      try {
+        // Fetch the whole initial store
+        const wholeStore = await (window as any).electron.getWholeStore();
+        await dispatch(addToStickyNoteState(wholeStore.initialNotes[0]));
+        await dispatch(addToWebLinkState(wholeStore.initialLinks[0]));
+        await dispatch(addToFileLinkState(wholeStore.initialFiles[0]));
+        setLayout(wholeStore.initialLayout);
+      } catch (error) {
+        console.error('Failed to fetch data from Electron store:', error);
+      }
     })();
-  }, []);
-  
-  //Layout Management
-  const [layout, setLayout] = useState<Layout[]>(
-      [
-        { i: "test", x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
-        { i: "note1", x: 2, y: 2, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
-        { i: "link1", x: 2, y: 3, w: 1, h: 2, isResizable: false},
-        { i: "file1", x: 2, y: 4, w: 1, h: 2, isResizable: false}
-      ],
-    );
+  }, []);  
   const onLayoutChange = (newLayout: any) => {
     setLayout(newLayout);
   };
@@ -100,7 +97,7 @@ const SingleBox: React.FC = () => {
   })
   const addStickyNote = () => {
     const newNoteId = "note" + Math.random().toString(36).substring(7) // Random ID
-    dispatch(addToStickyNoteState({ newNoteId }));
+    dispatch(addToStickyNoteState({ id: newNoteId, content: `New Note ${newNoteId}`}));
     setLayout([...layout, { i: newNoteId, x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]}])
   }
 

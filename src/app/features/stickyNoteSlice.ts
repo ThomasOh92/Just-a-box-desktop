@@ -10,22 +10,15 @@ interface StickyNotesState {
 }
 
 const initialState: StickyNotesState = {
-  stickyNotesArray: [
-    {id: "note1", content: "content for note 1"}
-  ],
+  stickyNotesArray: [],
 };
 
 export const stickyNotesSlice = createSlice({
   name: 'stickyNotes',
   initialState,
   reducers: {
-    addToStickyNoteState: (state, action: PayloadAction<{newNoteId: string}>) => {
-      const { newNoteId } = action.payload;
-      const newNote = {
-        id: newNoteId,
-        content: "content for note " + newNoteId,
-      };
-      state.stickyNotesArray.push(newNote);
+    addToStickyNoteState: (state, action: PayloadAction<StickyNote>) => {
+      state.stickyNotesArray.push(action.payload);
     },
     removeFromStickyNoteState: (state, action: PayloadAction<string>) => {
       state.stickyNotesArray = state.stickyNotesArray.filter(note => note.id !== action.payload);

@@ -19,5 +19,8 @@ contextBridge.exposeInMainWorld('electron', {
   getStoreValue: async (key) => {
     return await ipcRenderer.invoke('getStoreValue', key);
   },
+  getWholeStore: async () => {
+    return await ipcRenderer.invoke('getWholeStore');
+  }
 });
 
