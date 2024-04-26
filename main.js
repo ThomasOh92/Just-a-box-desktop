@@ -1,7 +1,40 @@
-const { app, BrowserWindow, ipcMain, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, Menu } = require('electron')
 const path = require('path');
 const Store = require('electron-store');
 const store = new Store();
+let singleBoxWindow = null;
+const menuTemplate = [
+  {
+      label: 'File',
+      submenu: [
+          { label: 'Open', click: () => { console.log('Open clicked'); } },
+          { label: 'Save', click: () => singleBoxWindow.webContents.send('start-save') },
+      ]
+  },
+  {
+      label: 'Edit',
+      submenu: [
+          { label: 'Undo', role: 'undo' },
+          { label: 'Redo', role: 'redo' },
+          { type: 'separator' },
+          { label: 'Cut', role: 'cut' },
+          { label: 'Copy', role: 'copy' },
+          { label: 'Paste', role: 'paste' }
+      ]
+  },
+  {
+      label: 'View',
+      submenu: [
+          { label: 'Reload', role: 'reload' }      
+      ]
+  },
+  {
+      label: 'Help',
+      submenu: [
+          { label: 'About', click: () => { console.log('About clicked'); } }
+      ]
+  }
+];
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -18,14 +51,17 @@ const createWindow = () => {
     // win.webContents.openDevTools();
   }
 
-  app.whenReady().then(() => {
+  app.whenReady().then(() => {   
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
+
     //For Dashboard - commented out for v1
     //To reinstate for v2 when we implement the dashboard
     //createWindow()
 
     //Create Box right away - Temporary for v1 - force hash of box/1
     //This will be removed in v2 when we implement the dashboard
-    const singleBoxWindow = new BrowserWindow({
+    singleBoxWindow = new BrowserWindow({
       width: 800, // Set desired width for the new window
       height: 600, // Set desired height for the new window
       webPreferences: {
@@ -37,6 +73,8 @@ const createWindow = () => {
     });
     singleBoxWindow.loadFile('dist/index.html', { hash: `box/1` });    
     singleBoxWindow.webContents.openDevTools();
+    
+
   })
 
   app.on('window-all-closed', () => {
@@ -45,7 +83,7 @@ const createWindow = () => {
   })
   
   ipcMain.on('open-single-box', (_, boxId) => {
-    const singleBoxWindow = new BrowserWindow({
+    singleBoxWindow = new BrowserWindow({
       width: 800, // Set desired width for the new window
       height: 600, // Set desired height for the new window
       webPreferences: {
@@ -99,3 +137,6 @@ const createWindow = () => {
 //       {id: "file1", fileName: "testdoc", filePath: String.raw`"C:\Users\ohcst\OneDrive\Desktop\testworddoc.docx"`}
 //   ]    
 // });
+
+
+

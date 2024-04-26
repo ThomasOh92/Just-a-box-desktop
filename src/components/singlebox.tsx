@@ -19,6 +19,14 @@ const SingleBox: React.FC = () => {
   const dispatch = useAppDispatch();
   const [layout, setLayout] = useState<Layout[]>([]);
 
+  //Saving and persistence
+  useEffect(() => {
+    (window as any).electron.receive('start-save', () => {
+      console.log("save button clicked");
+    });
+  },[])
+  
+  // Layout Management
   useEffect(() => {
     (async () => {
       try {
