@@ -62,7 +62,7 @@ const createWindow = () => {
     //Create Box right away - Temporary for v1 - force hash of box/1
     //This will be removed in v2 when we implement the dashboard
     singleBoxWindow = new BrowserWindow({
-      width: 800, // Set desired width for the new window
+      width: 775, // Set desired width for the new window
       height: 600, // Set desired height for the new window
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
@@ -72,7 +72,7 @@ const createWindow = () => {
       }
     });
     singleBoxWindow.loadFile('dist/index.html', { hash: `box/1` });    
-    singleBoxWindow.webContents.openDevTools();
+    // singleBoxWindow.webContents.openDevTools();
     
 
   })
@@ -111,7 +111,8 @@ const createWindow = () => {
   });
   
   ipcMain.handle('setStoreValue', async (event, key, value) => {
-    store.set(key, value);
+    await store.set(key, value);
+    return "saved in electron-store!"
   });
 
   ipcMain.handle('getWholeStore', async (event) => { 
@@ -121,22 +122,83 @@ const createWindow = () => {
 
 // See format for initial test data, found in "C:\Users\ohcst\AppData\Roaming\just-a-box-v2\config.json". Edit from there
 // store.set({
-//   initialLayout: [
+//   storeLayout: [
 //       { i: "test", x: 0, y: 0, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
 //       { i: "note1", x: 2, y: 2, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
 //       { i: "link1", x: 2, y: 3, w: 1, h: 2, isResizable: false},
 //       { i: "file1", x: 2, y: 4, w: 1, h: 2, isResizable: false}
 //   ],
-//   initialNotes:[
+//   storeNotes:[
 //       {id: "note1", content: "content for note 1"}
 //   ],
-//   initialLinks: [
+//   storeLinks: [
 //       {id: "link1", linkName: "GoogleTest", url: "https://www.google.com"},
 //   ],
-//   initialFiles: [
+//   storeFiles: [
 //       {id: "file1", fileName: "testdoc", filePath: String.raw`"C:\Users\ohcst\OneDrive\Desktop\testworddoc.docx"`}
 //   ]    
 // });
 
-
-
+// {
+//   "storeLayout": [
+//       {
+//           "i": "test",
+//           "x": 0,
+//           "y": 0,
+//           "w": 2,
+//           "h": 5,
+//           "isResizable": true,
+//           "resizeHandles": [
+//               "se"
+//           ]
+//       },
+//       {
+//           "i": "note1",
+//           "x": 2,
+//           "y": 2,
+//           "w": 2,
+//           "h": 5,
+//           "isResizable": true,
+//           "resizeHandles": [
+//               "se"
+//           ]
+//       },
+//       {
+//           "i": "link1",
+//           "x": 2,
+//           "y": 3,
+//           "w": 1,
+//           "h": 2,
+//           "isResizable": false
+//       },
+//       {
+//           "i": "file1",
+//           "x": 2,
+//           "y": 4,
+//           "w": 1,
+//           "h": 2,
+//           "isResizable": false
+//       }
+//   ],
+//   "storeNotes": [
+//       {
+//           "id": "note1",
+//           "content": "content for note 1"
+//       }
+//   ],
+//   "storeLinks": [
+//       {
+//           "id": "link1",
+//           "linkName": "GoogleTest",
+//           "url": "https://www.google.com"
+//       }
+//   ],
+//   "storeFiles": [
+//       {
+//           "id": "file1",
+//           "fileName": "testdoc",
+//           "filePath": "String.raw`\"C:\\Users\\ohcst\\OneDrive\\Desktop\\testworddoc.docx\"`"
+//       }
+//   ]
+// }
+  

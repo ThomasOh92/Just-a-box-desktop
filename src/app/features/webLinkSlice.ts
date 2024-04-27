@@ -18,6 +18,9 @@ export const webLinksSlice = createSlice({
   name: 'webLinks',
   initialState,
   reducers: {
+    initializeWebLinksState: (state, action: PayloadAction<WebLink[]>) => {
+      state.weblinksArray = action.payload;
+    },
     addToWebLinkState: (state, action: PayloadAction<WebLink>) => {
       state.weblinksArray.push(action.payload);
     },
@@ -36,6 +39,6 @@ export const webLinksSlice = createSlice({
   },
 });
 
-export const { addToWebLinkState, removeFromWebLinkState } = webLinksSlice.actions;
+export const { initializeWebLinksState, addToWebLinkState, removeFromWebLinkState } = webLinksSlice.actions;
 
 export default webLinksSlice.reducer;

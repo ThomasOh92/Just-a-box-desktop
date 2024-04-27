@@ -6,25 +6,36 @@ import GridLayout from 'react-grid-layout';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { StickyNoteItem } from './box-components/stickyNote';
 import { ContextMenu } from './box-components/contextMenu';
-import { addToStickyNoteState,  removeFromStickyNoteState } from '../app/features/stickyNoteSlice';
-import { addToWebLinkState, removeFromWebLinkState } from '../app/features/webLinkSlice';
+import { addToStickyNoteState,  initializeStickyNotesState,  removeFromStickyNoteState } from '../app/features/stickyNoteSlice';
+import { addToWebLinkState, initializeWebLinksState, removeFromWebLinkState } from '../app/features/webLinkSlice';
 import { AddItemModal } from './box-components/addItemModal';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { WebLinkItem } from './box-components/webLink';
 import { FileLinkItem } from './box-components/fileLink';
-import { addToFileLinkState, removeFromFileLinkState } from '../app/features/fileLinkSlice';
+import {addToFileLinkState, initializeFileLinksState, removeFromFileLinkState } from '../app/features/fileLinkSlice';
 
 const SingleBox: React.FC = () => {
   const dispatch = useAppDispatch();
   const [layout, setLayout] = useState<Layout[]>([]);
+  const stickyNotes = useAppSelector(state => state.stickyNotes.stickyNotesArray)
+  const weblinks = useAppSelector(state => state.webLinks.weblinksArray)
+  const filelinks = useAppSelector(state => state.fileLinks.fileLinksArray)
 
   //Saving and persistence
   useEffect(() => {
-    (window as any).electron.receive('start-save', () => {
-      console.log("save button clicked");
+    (window as any).electron.receive('start-save', async () => {
+      // Save the current layout and redux states
+      const confirmationOfLayoutSave = await (window as any).electron.setStoreValue('storeLayout', layout);
+      const confirmationOfStickyNoteSave = await (window as any).electron.setStoreValue('storeNotes', stickyNotes);
+      const confirmationOfWebLinkSave = await (window as any).electron.setStoreValue('storeLinks', weblinks);
+      const confirmationOfFileLinkSave = await (window as any).electron.setStoreValue('storeFiles', filelinks);
+      console.log(confirmationOfLayoutSave, "layout")
+      console.log(confirmationOfStickyNoteSave, "notes")
+      console.log(confirmationOfWebLinkSave, "links")
+      console.log(confirmationOfFileLinkSave, "files")
     });
-  },[])
+  },[layout, stickyNotes, weblinks, filelinks])
   
   // Layout Management
   useEffect(() => {
@@ -32,10 +43,10 @@ const SingleBox: React.FC = () => {
       try {
         // Fetch the whole initial store
         const wholeStore = await (window as any).electron.getWholeStore();
-        await dispatch(addToStickyNoteState(wholeStore.initialNotes[0]));
-        await dispatch(addToWebLinkState(wholeStore.initialLinks[0]));
-        await dispatch(addToFileLinkState(wholeStore.initialFiles[0]));
-        setLayout(wholeStore.initialLayout);
+        await dispatch(initializeStickyNotesState(wholeStore.storeNotes));
+        await dispatch(initializeWebLinksState(wholeStore.storeLinks));
+        await dispatch(initializeFileLinksState(wholeStore.storeFiles));
+        setLayout(wholeStore.storeLayout);
       } catch (error) {
         console.error('Failed to fetch data from Electron store:', error);
       }
@@ -92,7 +103,6 @@ const SingleBox: React.FC = () => {
   }
 
   //Sticky Note Management
-  const stickyNotes = useAppSelector(state => state.stickyNotes.stickyNotesArray)
   const stickyNotesToRender = stickyNotes.map((note: { id: string, content: string }) => {
     return (
       <div key={note.id} onContextMenu={(e) => handleRightClickElement(e, note.id)}>
@@ -110,7 +120,6 @@ const SingleBox: React.FC = () => {
   }
 
   //Weblink Management
-  const weblinks = useAppSelector(state => state.webLinks.weblinksArray)
   const weblinksToRender = weblinks.map((weblink: { id: string, linkName: string, url: string }) => {
     return (
       <div key={weblink.id} onContextMenu={(e) => handleRightClickElement(e, weblink.id)}>
@@ -130,7 +139,6 @@ const SingleBox: React.FC = () => {
   };
 
   //File Management
-  const filelinks = useAppSelector(state => state.fileLinks.fileLinksArray)
   const filelinksToRender = filelinks.map((filelink: { id: string, fileName: string, filePath: string }) => {
     return (
       <div key={filelink.id} onContextMenu={(e) => handleRightClickElement(e, filelink.id)}>
@@ -154,7 +162,7 @@ const SingleBox: React.FC = () => {
 
   // Render begins here
   return (
-    <Box className="box" onContextMenu={handleRightClickGeneric} height={525} width={750} id="box" style={{overflow: 'hidden'}}>
+    <Box className="box" onContextMenu={handleRightClickGeneric} height={525} width={750} id="box" style={{overflow: 'hidden', backgroundColor: '#ededed'}}>
       <ContextMenu 
         contextMenu={contextMenu} 
         onClose={() => setContextMenu(null)} 
@@ -190,8 +198,6 @@ const SingleBox: React.FC = () => {
         {stickyNotesToRender}
         {weblinksToRender}
         {filelinksToRender}
-        {/* Test Element */}
-        <div key="test" className="dragHandle" style={{border: '1px solid black' }}></div>
       </GridLayout>
       <AddItemModal open={weblinkModal} onClose={() => setWeblinkModal(false)} onAdd={addWeblink} label="Add URL Here"/>
       <AddItemModal open={filelinkModal} onClose={() => setFilelinkModal(false)} onAdd={addFilelink} label="Add File Path Here"/>

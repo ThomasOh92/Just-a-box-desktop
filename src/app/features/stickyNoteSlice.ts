@@ -17,6 +17,9 @@ export const stickyNotesSlice = createSlice({
   name: 'stickyNotes',
   initialState,
   reducers: {
+    initializeStickyNotesState: (state, action: PayloadAction<StickyNote[]>) => {
+      state.stickyNotesArray = action.payload;
+    },
     addToStickyNoteState: (state, action: PayloadAction<StickyNote>) => {
       state.stickyNotesArray.push(action.payload);
     },
@@ -49,6 +52,6 @@ export const stickyNotesSlice = createSlice({
   },
 });
 
-export const { addToStickyNoteState, removeFromStickyNoteState, updateStickyNoteContent } = stickyNotesSlice.actions;
+export const { initializeStickyNotesState, addToStickyNoteState, removeFromStickyNoteState, updateStickyNoteContent } = stickyNotesSlice.actions;
 
 export default stickyNotesSlice.reducer;

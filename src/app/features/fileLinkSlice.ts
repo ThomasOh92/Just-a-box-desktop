@@ -18,6 +18,9 @@ export const fileLinksSlice = createSlice({
   name: 'fileLinks',
   initialState,
   reducers: {
+    initializeFileLinksState: (state, action: PayloadAction<FileLink[]>) => {
+      state.fileLinksArray = action.payload;
+    },
     addToFileLinkState: (state, action: PayloadAction<FileLink>) => {
       state.fileLinksArray.push(action.payload);
     },
@@ -36,6 +39,6 @@ export const fileLinksSlice = createSlice({
   },
 });
 
-export const { addToFileLinkState, removeFromFileLinkState } = fileLinksSlice.actions;
+export const { initializeFileLinksState, addToFileLinkState, removeFromFileLinkState } = fileLinksSlice.actions;
 
 export default fileLinksSlice.reducer;

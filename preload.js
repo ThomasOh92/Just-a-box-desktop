@@ -20,7 +20,7 @@ contextBridge.exposeInMainWorld('electron', {
     ipcRenderer.send('open-file', filePath);
   },
   setStoreValue: async (key, value) => {
-    await ipcRenderer.invoke('setStoreValue', key, value);
+    return await ipcRenderer.invoke('setStoreValue', key, value);
   },
   getStoreValue: async (key) => {
     return await ipcRenderer.invoke('getStoreValue', key);
