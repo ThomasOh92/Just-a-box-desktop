@@ -78,18 +78,12 @@ const createWindow = () => {
         initialized: true,
         storeLayout: [
             { i: "note1", x: 2, y: 2, w: 2, h: 5, isResizable: true, resizeHandles: ["se"]},
-            { i: "link1", x: 2, y: 3, w: 1, h: 2, isResizable: false},
-            { i: "file1", x: 2, y: 4, w: 1, h: 2, isResizable: false}
         ],
         storeNotes:[
-            {id: "note1", content: "content for note 1"}
+            {id: "note1", content: "Get started with Just-A-Box!"}
         ],
-        storeLinks: [
-            {id: "link1", linkName: "GoogleTest", url: "https://www.google.com"},
-        ],
-        storeFiles: [
-            {id: "file1", fileName: "fakefilepath", filePath: String.raw`"C:\Users\ohcst\OneDrive\Desktop\testworddoc.docx"`}
-        ]    
+        storeLinks: [],
+        storeFiles: []    
       });
     }
   })
