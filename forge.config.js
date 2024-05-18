@@ -10,7 +10,7 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'just-a-box-v2',
+        name: 'just-a-box-desktop',
       },
       platforms: ['win32'],
     },
