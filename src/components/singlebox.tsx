@@ -132,9 +132,9 @@ const SingleBox: React.FC = () => {
     );
   })
   const [weblinkModal, setWeblinkModal] = useState<boolean>(false);
-  const addWeblink = (inputValue: string) => {
+  const addWeblink = (inputValue: string, inputName: string) => {
     const newWebLinkId = "link" + Math.random().toString(36).substring(7) // Random ID
-    dispatch(addToWebLinkState({id: newWebLinkId, linkName: inputValue, url: inputValue}));
+    dispatch(addToWebLinkState({id: newWebLinkId, linkName: inputName, url: inputValue}));
     setLayout([...layout, { i: newWebLinkId, x: 0, y: 0,  w: 1, h: 2, isResizable: false}])
   };
 
@@ -151,12 +151,12 @@ const SingleBox: React.FC = () => {
     );
   })
   const [filelinkModal, setFilelinkModal] = useState<boolean>(false);
-  const addFilelink = (inputValue: string) => {
+  const addFilelink = (inputValue: string, inputName: string) => {
     const newFileLinkId = "file" + Math.random().toString(36).substring(7) // Random ID
-    const lastIndex = inputValue.lastIndexOf("\\");
-    const submittedFileName = inputValue.substring(lastIndex + 1);
-    console.log(submittedFileName, "submittedFileName")
-    dispatch(addToFileLinkState({id: newFileLinkId, fileName: submittedFileName, filePath: inputValue}));
+    // const lastIndex = inputValue.lastIndexOf("\\");
+    // const submittedFileName = inputValue.substring(lastIndex + 1);
+    // console.log(submittedFileName, "submittedFileName")
+    dispatch(addToFileLinkState({id: newFileLinkId, fileName: inputName, filePath: inputValue}));
     setLayout([...layout, { i: newFileLinkId, x: 0, y: 0,  w: 1, h: 2, isResizable: false}])
   };
 
@@ -199,8 +199,8 @@ const SingleBox: React.FC = () => {
         {weblinksToRender}
         {filelinksToRender}
       </GridLayout>
-      <AddItemModal open={weblinkModal} onClose={() => setWeblinkModal(false)} onAdd={addWeblink} label="Add URL Here"/>
-      <AddItemModal open={filelinkModal} onClose={() => setFilelinkModal(false)} onAdd={addFilelink} label="Add File Path Here"/>
+      <AddItemModal open={weblinkModal} onClose={() => setWeblinkModal(false)} onAdd={addWeblink} labelForInput="Add URL Here" labelForNaming='Link Name'/>
+      <AddItemModal open={filelinkModal} onClose={() => setFilelinkModal(false)} onAdd={addFilelink} labelForInput="Add File Path Here" labelForNaming='File Name'/>
     </Box>
   );
   

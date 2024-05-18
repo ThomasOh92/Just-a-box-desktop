@@ -4,13 +4,15 @@ import { Box, Button, TextField, Modal } from '@mui/material';
 interface AddItemModalProps {
   open: boolean;
   onClose: () => void;
-  onAdd: (value: string) => void;
-  label: string;
+  onAdd: (arg1: string, arg2: string) => void;
+  labelForInput: string;
+  labelForNaming: string;
 }
 
-export const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onAdd, label }) => {
+export const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onAdd, labelForInput, labelForNaming }) => {
   const [inputValue, setInputValue] = React.useState('');
-  
+  const [inputName, setInputName] = React.useState('');
+
   const modalStyle = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -26,9 +28,9 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onAdd
   };
 
   const handleAdd = () => {
-    onAdd(inputValue);
-    console.log("addedweblinkplaceholder");
+    onAdd(inputValue, inputName);
     setInputValue('');
+    setInputName('');
     onClose();
   };
 
@@ -36,8 +38,15 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onAdd
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
         <TextField
+            id="add-item-name"
+            label={labelForNaming}
+            value={inputName}
+            onChange={(e) => setInputName(e.target.value)}
+            fullWidth
+          />
+        <TextField
           id="add-item-input"
-          label={label}
+          label={labelForInput}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           fullWidth
