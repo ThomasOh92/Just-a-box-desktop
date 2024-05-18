@@ -42,7 +42,8 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onAdd
             label={labelForNaming}
             value={inputName}
             onChange={(e) => setInputName(e.target.value)}
-            fullWidth
+            variant='standard'
+            sx={{ width: '200px', marginBottom: '20px'}}
           />
         <TextField
           id="add-item-input"
@@ -50,7 +51,10 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onAdd
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           fullWidth
-        />
+          multiline
+          rows={4}
+          sx={{ marginBottom: '10px'}}
+          />
           <Button sx={{ top: '5px', width: '30px' }} variant="contained" onClick={handleAdd}>Add</Button>
       </Box>
     </Modal>
