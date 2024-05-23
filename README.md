@@ -1,4 +1,4 @@
-**Just a Box** 
+## Just a Box 
 
 Consolidate your sticky notes, links and documents in one place.
 
