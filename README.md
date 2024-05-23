@@ -1,4 +1,5 @@
 **Just a Box** 
+
 Consolidate your sticky notes, links and documents in one place.
 
 Avoid over complicated and overengineered productivity tools. Just find all the things you need in one place, easily. 
