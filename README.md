@@ -6,6 +6,6 @@ Avoid over complicated and overengineered productivity tools. Just find all the 
 
 See demo below!
 
+https://github.com/ThomasOh92/Just-a-box-desktop/assets/46473598/3fdcfada-536a-4698-8218-3a9291e834ec
 
-https://github.com/ThomasOh92/Just-a-box-desktop/assets/46473598/be20c1d0-f319-4acd-8418-823a3f83cee1
-
+Please send me an email at ohcsthomas@gmail.com if you are interested in trying it out!
